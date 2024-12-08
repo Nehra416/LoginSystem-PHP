@@ -26,8 +26,11 @@
             $alertShow = true;
         } 
         elseif ($pwd == $confirm_pwd){
+            // convert the password into hash which is store in db
+            $hash = password_hash($pwd, PASSWORD_DEFAULT);
+
             // write the insert sql query
-            $sql = "INSERT INTO `users` (`username`, `password`, `dt`) VALUES ('$username', '$pwd', current_timestamp())";
+            $sql = "INSERT INTO `users` (`username`, `password`, `dt`) VALUES ('$username', '$hash', current_timestamp())";
 
             // run the sql query
             $response = mysqli_query($con, $sql);
@@ -88,7 +91,7 @@
     ?>
 
     <div class="container">
-        <h2 class="text-center mt-4">Signup here to create a account</h2>
+        <h2 class="text-center mt-4">Signup here to create a new account</h2>
 
         <!-- SignUp Form -->
         <form method="post" action="/phpCode/LoginSystem/signup.php">

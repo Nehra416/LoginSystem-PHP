@@ -2,6 +2,7 @@
 <?php
 $alertError = "";
 $alertShow = false;
+session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // create a connection with the database
@@ -17,20 +18,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $alertShow = true;
     } else {
         // write the find sql query
-        $sql = "SELECT * FROM `users` where `username` = '$username' AND `password` = '$pwd'";
+        $sql = "SELECT * FROM `users` where `username` = '$username'";
 
         // run the sql query
         $response = mysqli_query($con, $sql);
         $num = mysqli_num_rows($response);
 
+        // check that username is exists or not
         if ($num == 1) {
-            $alertShow = true;
-            session_start();
-            $_SESSION["loggedin"] = true;
-            $_SESSION["username"] = $username;
-            header("location: welcome.php");
+            // fetch the row data 
+            $data = mysqli_fetch_assoc($response);
+            // check that password is correct or not
+            if (password_verify($pwd, $data["password"])) {
+                $alertShow = true;
+                session_start();
+                $_SESSION["loggedin"] = true;
+                $_SESSION["username"] = $username;
+                header("location: welcome.php");
+            } else {
+                $alertError = "Wrong password";
+                $alertShow = true;
+            }
+            
         } else {
-            $alertError = "Wrong username or password";
+            $alertError = "Wrong username";
             $alertShow = true;
         }
     } 
@@ -68,12 +79,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>';
         } 
+    } 
+
+    // this will show alert if user try to access welcome.php without login
+    if(isset($_SESSION["globalAlert"])){
+        echo
+            '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error!</strong>  ' . $_SESSION["globalAlert"] . '
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>';
+
+        // unset the glbalAlert session so, that this message is not even after the refresh the page
+        unset($_SESSION['globalAlert']);
     }
 
     ?>
 
     <div class="container">
-        <h2 class="text-center mt-4">Signup here to create a account</h2>
+        <h2 class="text-center mt-4">Login (if already have an account) </h2>
 
         <!-- LogIn Form -->
         <form method="post" action="/phpCode/LoginSystem/Login.php">

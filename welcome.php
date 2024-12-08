@@ -1,10 +1,11 @@
 <!-- php code for check session -->
 <?php
-session_start();
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] != true) {
-    header("location: login.php");
-    exit;
-}
+    session_start();
+    if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] != true) {
+        $_SESSION['globalAlert'] = "You need to login first";
+        header("location: login.php");
+        exit;
+    }
 ?>
 
 <!-- html -->

@@ -9,15 +9,28 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/phpCode/LoginSystem/welcome.php">Home</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/phpCode/LoginSystem/login.php">LogIn</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/phpCode/LoginSystem/signup.php">Signup</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/phpCode/LoginSystem/logout.php">Logout</a>
-                </li>
+
+                <!-- navbar according to login of user -->
+                <?php
+                if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] != true) {
+                    echo '
+                        <li class="nav-item">
+                          <a class="nav-link" href="/phpCode/LoginSystem/login.php">LogIn</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/phpCode/LoginSystem/signup.php">Signup</a>
+                        </li>';
+                }
+                ?>
+
+                <?php
+                if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] = true) {
+                    echo '
+                        <li class="nav-item">
+                            <a class="nav-link" href="/phpCode/LoginSystem/logout.php">Logout</a>
+                        </li>';
+                }
+                ?>
 
             </ul>
             <form class="d-flex" role="search">
